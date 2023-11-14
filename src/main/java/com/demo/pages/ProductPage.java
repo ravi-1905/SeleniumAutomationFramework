@@ -9,23 +9,37 @@ import org.openqa.selenium.WebDriver;
 
 import com.demo.utils.Verification;
 
-public class DashboardPage extends BasePage{
+public class ProductPage extends BasePage {
 
 	Verification verify;
-	
-	public DashboardPage(WebDriver driver) {
+
+	public ProductPage(WebDriver driver) {
 		super(driver);
 		verify = new Verification(driver);
 	}
-	
-	By search = By.xpath("//input[@placeholder='Search']");
-	By searchResult = By.xpath("//a[@href='/web/index.php/directory/viewDirectory']");
-	
-	
-	public void searchDashboard(String sSearchInput) {
-		sendKeys(search, sSearchInput);
-		boolean isDashboardExist = waitVisibility(searchResult).isDisplayed();
-		verify.verify(isDashboardExist, "Search results found", "Search results not found", "Search_directory");
+
+	String addToCart = "//div[contains(text(),'%s')]/parent::a/parent::div/following-sibling::div/button";
+	By productCountInCart = By.xpath("//div[@id='shopping_cart_container']/a/span");
+
+	public int getProductCount() {
+		int productCount;
+		if (waitVisibility(productCountInCart).isDisplayed()) {
+			productCount = Integer.valueOf(getText(productCountInCart));
+		} else {
+			productCount = 0;
+		}
+
+		return productCount;
+	}
+
+	public void addProductToCart(String sProductName) {
+//		int productCountBefore = getProductCount();
+		click(By.xpath(String.format(addToCart, sProductName)));
+
+		boolean isProductAddedToCart = 1 == getProductCount();
+
+		verify.verify(isProductAddedToCart, sProductName + " is added to cart", sProductName + " is not added to cart",
+				sProductName);
 	}
 
 }

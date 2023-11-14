@@ -10,8 +10,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 import com.demo.utils.Utils;
 
@@ -22,7 +22,7 @@ public class BaseTest {
 	public Properties prop;
 	private Logger log = LogManager.getLogger(BaseTest.class.getName());
 	
-	@BeforeSuite
+	@BeforeMethod
     public void beforeSuite() {
 		prop = Utils.loadConfig("./src/main/resources/config.properties");
 		String browserName = prop.getProperty("browser");
@@ -52,10 +52,9 @@ public class BaseTest {
 		driver.manage().window().maximize();
 		log.info("Driver is initialized.");
 
-		driver.get(appURL);
     }
 
-    @AfterSuite
+    @AfterMethod
     public void afterSuite() {
         if(driver !=null) {
             driver.quit();

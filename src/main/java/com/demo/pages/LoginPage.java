@@ -11,26 +11,37 @@ import com.demo.utils.Verification;
 
 public class LoginPage extends BasePage {
 	
-	Verification verify;
+	Verification verification;
 	public LoginPage(WebDriver driver) {
 		super(driver);
-		verify = new Verification(driver);
+		verification = new Verification(driver);
 	}
 
 	/** Home page Web Elements **/
-	By userName = By.xpath("//input[@name='username']");
-	By password = By.xpath("//input[@name='password']");
-	By loginBtn = By.xpath("//button[@type='submit']");
-	By profilePicture = By.xpath("//img[@alt='profile picture']");
+	By userName = By.xpath("//input[@id='user-name']");
+	By password = By.xpath("//input[@id='password']");
+	By loginBtn = By.xpath("//input[@id='login-button']");
+	By productTitle = By.xpath("//div[contains(text(),'Products')]");
+	By loginErrorText = By.xpath("//h3[contains(.,'Username and password do not match any user in this service')]");
 	
 	
 	/** Home page Methods **/
-	public LoginPage login(String sUserName, String sPassword) {
+	public LoginPage loginWithValidCredentials(String sUserName, String sPassword) {
 		sendKeys(userName, sUserName);
 		sendKeys(password, sPassword);
 		click(loginBtn);
-		boolean isProfileDisplayed = waitVisibility(profilePicture).isDisplayed();
-		verify.verify(isProfileDisplayed, "Login sucessfull",  "Login Failed", "Login");
+		boolean isProductDisplayed = waitVisibility(productTitle).isDisplayed();
+		verification.verify(isProductDisplayed, "Login successful",  "Login Failed", "Login");
 		return new LoginPage(driver);
 	}
+	
+	public LoginPage loginWithInValidCredentials(String sUserName, String sPassword) {
+		sendKeys(userName, sUserName);
+		sendKeys(password, sPassword);
+		click(loginBtn);
+		boolean isPErrorTextDisplayed = waitVisibility(loginErrorText).isDisplayed();
+		verification.verify(isPErrorTextDisplayed, "Login is Unsucessfull",  "Login successful", "Login Unsuccessful");
+		return new LoginPage(driver);
+	}
+	
 }
